@@ -1,1 +1,0 @@
-https://www.npmjs.com/package/@auth0/nextjs-auth0?activeTab=readme#app-router
