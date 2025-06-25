@@ -153,6 +153,8 @@
             "button": "View Prayer Times",
             "comingSoon": "Prayer times feature coming soon!",
             "inCity": "Prayer Times in",
+            "selectPlatform": "Platform",
+            "selectZone": "Zone",
             "selectState": "State",
             "selectCity": "City",
             "city": "City",

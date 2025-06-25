@@ -6,6 +6,9 @@ export const DRAWER_WIDTH: number = 240;
 export const BACKGROUND_IMAGE: string = 'https://wallpapercave.com/wp/wp2708351.jpg';
 export const GENERAL_SETTINGS: string[] = ['Profile', 'Settings'];
 
+export const E_SOLAT: string = "esolat";
+export const ALADHAN: string = "aladhan";
+
 export const SINGLE_SPACE: string = ' ';
 export const SINGLE_DOT: string = '.';
 

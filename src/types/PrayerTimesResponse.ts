@@ -5,7 +5,7 @@ export interface PrayerTimesResponse {
     code: number;
     data: {
         timings: { [key: string]: string };
-        date: DateInfo;
-        meta: MetaInfo;
+        date?: DateInfo;
+        meta?: MetaInfo;
     };
 }

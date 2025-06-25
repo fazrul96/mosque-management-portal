@@ -1,5 +1,5 @@
 import {StrictMode} from 'react'
-import {createRoot} from 'react-dom/client'
+import {createRoot, Root} from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 import {createTheme, ThemeProvider} from '@mui/material/styles';
@@ -7,9 +7,10 @@ import {Auth0Provider} from "@auth0/auth0-react";
 import {I18nextProvider} from 'react-i18next';
 import i18n from './i18n';
 import {getAuthConfig} from "./config/authConfig.ts";
+import {Theme} from "@mui/material";
 
-const theme = createTheme();
-const root = createRoot(document.getElementById('root') as HTMLElement);
+const theme: Theme = createTheme();
+const root: Root = createRoot(document.getElementById('root') as HTMLElement);
 
 root.render(
     <StrictMode>

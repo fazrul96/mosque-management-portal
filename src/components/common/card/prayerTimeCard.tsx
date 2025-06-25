@@ -56,7 +56,7 @@ const PrayerTimeCard: React.FC<PrayerTimeCardProps> = ({prayer, time, t}) => {
                         textShadow: '2px 2px 5px rgba(0, 0, 0, 0.5)',
                     }}
                 >
-                    {time}
+                    {time!.slice(0, 5)}
                 </Typography >
             </CardContent >
         </Card >

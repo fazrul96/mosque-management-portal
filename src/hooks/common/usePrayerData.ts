@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import {fetchPrayerTimes} from '../../utils/fetchPrayerTimes';
+import {fetchPrayerTimesAladhan, fetchPrayerTimesEsolat} from '../../utils/fetchPrayerTimes';
 import {PrayerTimesResponse} from "../../types/PrayerTimesResponse.ts";
 import {PrayerTimesInfo} from "../../types/info/PrayerTimesInfo.ts";
 import {DateInfo} from "../../types/info/DateInfo.ts";
@@ -13,19 +13,31 @@ interface PrayerData {
     error: string | null;
 }
 
-const usePrayerData = (selectedCity: string): PrayerData => {
+type ApiType = 'aladhan' | 'esolat';
+
+const usePrayerData = (selectedCity: string, apiType: ApiType, zone: string = 'SGR01'): PrayerData => {
     const [prayerTimes, setPrayerTimes] = useState<PrayerTimesInfo | null>(null);
-    const [dateInfo, setDateInfo] = useState<DateInfo | null>(null);
-    const [metaInfo, setMetaInfo] = useState<MetaInfo | null>(null);
+    const [dateInfo, setDateInfo] = useState<any>(null);
+    const [metaInfo, setMetaInfo] = useState<any>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const getPrayerTimes = async () => {
+            setLoading(true);
             try {
-                const response: PrayerTimesResponse = await fetchPrayerTimes(selectedCity);
-                const { timings, date, meta } = response.data;
+                let response: PrayerTimesResponse;
 
+                if (apiType === 'aladhan') {
+                    response = await fetchPrayerTimesAladhan(selectedCity);
+                } else if (apiType === 'esolat' && zone) {
+                    response = await fetchPrayerTimesEsolat(zone);
+                } else {
+                    throw new Error('Invalid API or missing zone for e-Solat');
+                }
+
+                const { timings, date, meta } = response.data;
+                console.log(response.data);
                 const formattedPrayerTimes: PrayerTimesInfo = {
                     Fajr: timings.Fajr || null,
                     Sunrise: timings.Sunrise || null,
@@ -46,7 +58,7 @@ const usePrayerData = (selectedCity: string): PrayerData => {
         };
 
         getPrayerTimes();
-    }, [selectedCity]);
+    }, [selectedCity, apiType, zone]);
 
     return { prayerTimes, dateInfo, metaInfo, loading, error };
 };

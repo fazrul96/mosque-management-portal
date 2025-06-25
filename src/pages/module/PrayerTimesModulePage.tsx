@@ -1,5 +1,15 @@
 import React, {useState} from 'react';
-import {Box, Breadcrumbs, Card, CardContent, CircularProgress, Divider, Grid2, Typography} from '@mui/material';
+import {
+    Box,
+    Breadcrumbs,
+    Card,
+    CardContent,
+    CircularProgress,
+    Divider,
+    FormControl,
+    Grid2, InputLabel, MenuItem, Select, SelectChangeEvent,
+    Typography
+} from '@mui/material';
 import {useTranslation} from 'react-i18next';
 import usePrayerData from "../../hooks/common/usePrayerData.ts";
 import usePrayerCalculations from "../../hooks/common/usePrayerCalculations.ts";
@@ -8,20 +18,32 @@ import PrayerTimeCard from '../../components/common/card/prayerTimeCard.tsx';
 import NextPrayerCard from "../../components/common/card/nextPrayerCard.tsx";
 import StateCitySelector from '../../components/common/form/stateCitySelector.tsx';
 import DateTimeDisplay from "../../components/common/dateTimeDisplay.tsx";
-import {STATES} from '../../data/stateData.tsx';
+import {STATES, ZONES} from '../../data/stateData.tsx';
 import {PrayerTimesInfo} from "../../types/info/PrayerTimesInfo.ts";
+import {toProperCase} from "../../utils/stringUtils.ts";
+import {ALADHAN, E_SOLAT} from "../../constants/AppConstants.ts";
 
 const PrayerTimes: React.FC = () => {
     const { t } = useTranslation();
     const [selectedCity, setSelectedCity] = useState<string>("Kuala Lumpur");
     const [selectedState, setSelectedState] = useState<string>("Wilayah Persekutuan");
-
-    const { prayerTimes, dateInfo, metaInfo, loading, error } = usePrayerData(selectedCity);
+    const [apiType, setApiType] = useState<'aladhan' | 'esolat'>('aladhan');
+    const [zone, setZone] = useState<string>('SGR01');
+    const { prayerTimes, dateInfo, metaInfo, loading, error } = usePrayerData(selectedCity, apiType, zone);
     const { nextPrayer, nextPrayerTime, currentTimeString, remainingTime } = usePrayerCalculations(prayerTimes);
 
     const todayDate = new Date().toLocaleDateString("en-GB", {
         weekday: "long", year: "numeric", month: "short", day: "numeric"
     });
+
+    const handleApiChange = (event: SelectChangeEvent) => {
+        const selectedApi = event.target.value as 'aladhan' | 'esolat';
+        setApiType(selectedApi);
+    };
+
+    const handleZoneChange = (event: SelectChangeEvent) => {
+        setZone(event.target.value);
+    };
 
     if (loading) {
         return (
@@ -69,19 +91,48 @@ const PrayerTimes: React.FC = () => {
                     <Grid2 container spacing={3}>
                         <Grid2 size={{ xs: 12, sm: 12, md: 6 }}>
                             <Typography variant="h4" gutterBottom align="left" fontWeight="bold" color="primary" sx={{ fontSize: '1.8rem' }}>
-                                {t('sections.prayers.inCity')} {selectedCity}
+                                {t('sections.prayers.inCity')} {apiType === ALADHAN ? selectedCity : zone}
                             </Typography>
-                            <StateCitySelector
-                                states={STATES}
-                                selectedState={selectedState}
-                                setSelectedState={setSelectedState}
-                                selectedCity={selectedCity}
-                                setSelectedCity={setSelectedCity}
-                                t={t}
-                            />
+                            <FormControl fullWidth margin="normal">
+                                <InputLabel sx={{ color: 'primary.main' }}>
+                                    {t('sections.prayers.selectPlatform')}
+                                </InputLabel>
+                                    <Select
+                                        value={apiType}
+                                        label={t('selectApi')}
+                                        onChange={handleApiChange}
+                                    >
+                                        <MenuItem value="aladhan">{toProperCase(t(ALADHAN))}</MenuItem>
+                                        <MenuItem value="esolat">{toProperCase(t(E_SOLAT))}</MenuItem>
+                                    </Select>
+                            </FormControl>
+
+                            {apiType === ALADHAN ? (
+                                <StateCitySelector
+                                    states={STATES}
+                                    selectedState={selectedState}
+                                    setSelectedState={setSelectedState}
+                                    selectedCity={selectedCity}
+                                    setSelectedCity={setSelectedCity}
+                                    t={t}
+                                />
+                            ) : (
+                                <FormControl fullWidth margin="normal">
+                                    <InputLabel sx={{ color: 'primary.main' }}>
+                                        {t('sections.prayers.selectZone')}
+                                    </InputLabel>
+                                    <Select value={zone} onChange={handleZoneChange}>
+                                        {ZONES.map((zoneOption) => (
+                                            <MenuItem key={zoneOption.code} value={zoneOption.code}>
+                                                {zoneOption.label}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            )}
                         </Grid2>
                         <Grid2 size={{ xs: 12, sm: 12, md: 6 }}>
-                            <DateTimeDisplay todayDate={todayDate} currentTimeString={currentTimeString} dateInfo={dateInfo} metaInfo={metaInfo}/>
+                            <DateTimeDisplay todayDate={todayDate} currentTimeString={currentTimeString} dateInfo={dateInfo} metaInfo={metaInfo} apiType={apiType}/>
                         </Grid2>
                     </Grid2>
 

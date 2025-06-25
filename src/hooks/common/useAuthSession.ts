@@ -1,7 +1,6 @@
 import {useEffect, useMemo, useState} from 'react';
 import {useAuth0} from '@auth0/auth0-react';
 import {UserSession} from "../../types/UserSession.ts";
-import {getBaseUrl} from "../../config/authConfig.ts";
 
 const useAuthSession = () => {
     const { user, isAuthenticated, loginWithRedirect, logout } = useAuth0();
@@ -26,7 +25,7 @@ const useAuthSession = () => {
         signIn: () => loginWithRedirect(),
         signOut: () => {
             logout({
-                logoutParams: { returnTo: getBaseUrl() },
+                logoutParams: { returnTo: import.meta.env.VITE_PUBLIC_URL },
             });
             setSession(null);
         },

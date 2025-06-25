@@ -2,19 +2,22 @@ import React from 'react';
 import {Box, Stack, Typography} from '@mui/material';
 import {DateInfo} from "../../types/info/DateInfo.ts";
 import {MetaInfo} from "../../types/info/MetaInfo.ts";
+import {ALADHAN} from "../../constants/AppConstants.ts";
 
 interface DateTimeDisplayProps {
     todayDate: string,
     currentTimeString: string,
     dateInfo?: DateInfo | null,
     metaInfo?: MetaInfo | null
+    apiType?: string
 }
 
 const DateTimeDisplay: React.FC<DateTimeDisplayProps> = ({
                                                              todayDate,
                                                              currentTimeString,
                                                              dateInfo,
-                                                             metaInfo
+                                                             metaInfo,
+                                                             apiType
                                                          }) => {
     const hijri = dateInfo?.hijri;
     const timezone = metaInfo?.timezone;
@@ -52,15 +55,17 @@ const DateTimeDisplay: React.FC<DateTimeDisplayProps> = ({
                         </Typography >
                     </Box >
                 )}
+                {apiType === ALADHAN && (
+                    <Box sx = {{display: 'flex', flexDirection: 'row', alignItems: 'center'}} >
+                        <Typography variant = "body2" color = "textSecondary" sx = {{fontSize: '1rem', fontWeight: 600}} >
+                            Timezone:
+                        </Typography >
+                        <Typography variant = "body2" color = "textSecondary" sx = {{fontSize: '1rem', ml: 1}} >
+                            {timezone}
+                        </Typography >
+                    </Box >
+                )}
 
-                <Box sx = {{display: 'flex', flexDirection: 'row', alignItems: 'center'}} >
-                    <Typography variant = "body2" color = "textSecondary" sx = {{fontSize: '1rem', fontWeight: 600}} >
-                        Timezone:
-                    </Typography >
-                    <Typography variant = "body2" color = "textSecondary" sx = {{fontSize: '1rem', ml: 1}} >
-                        {timezone}
-                    </Typography >
-                </Box >
             </Stack >
         </Box >
     );
