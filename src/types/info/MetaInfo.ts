@@ -1,10 +1,12 @@
 export interface MetaInfo {
-    latitude: number;
-    longitude: number;
-    timezone: string;
-    method: {
+    latitude?: number;
+    longitude?: number;
+    timezone?: string;
+    method?: {
         id: number;
         name: string;
         params: { Fajr: number; Isha: string };
     };
+    zone?: string;
+    periodType?: string;
 }
